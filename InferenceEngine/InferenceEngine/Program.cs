@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,11 +28,11 @@ namespace InferenceEngine
             //Prompt for the location of the file
 
             Console.WriteLine("Please enter the location of the file...");
-            //fileLocation = Console.ReadLine();
+            //fileLocation = Console.ReadLine(); // << test1.txt
 
-            //for debug
-            //change to the loaction of the text file
-            fileLocation = "c:\\users\\daniel\\robot.txt";
+            // Set the debug argument to be the file in "Solution Items" within the project.
+            // This is so we can have multiple tests without having to overwrite each other.
+            fileLocation = args[0];
 
             //for the final version of this code, uncomment this.
             //this allows the final arguements to be passed into the program.
@@ -61,7 +63,7 @@ namespace InferenceEngine
             {
                 //Create the streamreader object to read the file.
                 System.IO.StreamReader file = new System.IO.StreamReader(fileLocation);
-
+                
                 //while the file is not finished
                 while ((line = file.ReadLine()) != null)
                 {
@@ -81,7 +83,7 @@ namespace InferenceEngine
                         pos = line.Split(';');
                     }
                 }
-
+                
                 //close the file
                 file.Close();
             }
