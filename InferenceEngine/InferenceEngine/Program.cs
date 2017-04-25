@@ -27,17 +27,16 @@ namespace InferenceEngine
 
             //Prompt for the location of the file
 
-            Console.WriteLine("Please enter the location of the file...");
-            //fileLocation = Console.ReadLine(); // << test1.txt
+            //Console.WriteLine("Please enter the location of the file...");
+            //fileLocation = Console.ReadLine();
 
             // Set the debug argument to be the file in "Solution Items" within the project.
             // This is so we can have multiple tests without having to overwrite each other.
-            fileLocation = args[0];
+            fileLocation = "test1.txt";
 
             //for the final version of this code, uncomment this.
             //this allows the final arguements to be passed into the program.
-            //fileLocation = args[0].ToString();
-            //Console.WriteLine(args[1].ToString());
+            //fileLocation = args[0];
 
             //cast algorithm type to enum
             //try catch to detect incorrect text entry.
