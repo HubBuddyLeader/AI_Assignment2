@@ -20,7 +20,7 @@ namespace InferenceEngine
             //location of the file to read in.
             string fileLocation = "";
             string line = "";
-            string[] pos;
+            string[] infixSplit;
 
             string testEnumCast = "TT";
             algorithmType selectedAlgorithm;
@@ -61,8 +61,15 @@ namespace InferenceEngine
             try
             {
                 //Create the streamreader object to read the file.
-                System.IO.StreamReader file = new System.IO.StreamReader(fileLocation);
-                
+                //for dubug, the file has been added to the resources of this project.
+                //the file has been moved to the debug folder. This gets the location of the file for testing.
+                string debugPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"test1.txt");
+
+                System.IO.StreamReader file = new System.IO.StreamReader(debugPath);
+
+                //for final implementation
+                //System.IO.StreamReader file = new System.IO.StreamReader(fileLocation);
+
                 //while the file is not finished
                 while ((line = file.ReadLine()) != null)
                 {
@@ -89,21 +96,44 @@ namespace InferenceEngine
                     //Do nothing in this case.
                     if (!((line.StartsWith("ASK")) || (line.StartsWith("TELL"))))
                     {
-                        pos = line.Split(';');
+                        infixSplit = line.Split(';');
+                    }
+                    //break for now, this is just for testing.
+                    //will read next line to determine query
+                    else if (line.StartsWith("ASK"))
+                    {
+                        break;
                     }
                 }
                 
                 //close the file
                 file.Close();
             }
-            catch
+            catch(Exception ex)
             {
                 Console.WriteLine("The selected file could not be opened. Please try executing the program again.");
+                Console.WriteLine(ex.Message);
                 //close the program
+                Console.WriteLine("Press 'Enter' to continue...");
+                Console.ReadLine();
                 Environment.Exit(0);
             }
 
+            //wait for the user to close the program.
+            Console.WriteLine("Press 'Enter' to continue...");
+            Console.ReadLine();
 
+        }
+
+        /// <summary>
+        /// Convert a prefix notation string to postfix.
+        /// </summary>
+        /// <param name="prefixArray"></param>
+        /// <returns></returns>
+        public string[] PostfixConvert (string[] prefixArray)
+        {
+            Stack<string> postfix = new Stack<string>();
+            
         }
     }
 }
