@@ -30,8 +30,6 @@ namespace InferenceEngine
             //Console.WriteLine("Please enter the location of the file...");
             //fileLocation = Console.ReadLine();
 
-            // Set the debug argument to be the file in "Solution Items" within the project.
-            // This is so we can have multiple tests without having to overwrite each other.
             fileLocation = "test1.txt";
 
             //for the final version of this code, uncomment this.
@@ -54,7 +52,6 @@ namespace InferenceEngine
                 Console.WriteLine("Invalid algorithm. Please try again.");
                 Environment.Exit(0);
             }
-
 
             //reading the file in is where something may go wrong. 
             //catch errors for this.
