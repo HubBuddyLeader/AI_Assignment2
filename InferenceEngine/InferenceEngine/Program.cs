@@ -121,16 +121,5 @@ namespace InferenceEngine
             Console.ReadLine();
 
         }
-
-        /// <summary>
-        /// Convert a prefix notation string to postfix.
-        /// </summary>
-        /// <param name="prefixArray"></param>
-        /// <returns></returns>
-        public string[] PostfixConvert (string[] prefixArray)
-        {
-            Stack<string> postfix = new Stack<string>();
-            
-        }
     }
 }
