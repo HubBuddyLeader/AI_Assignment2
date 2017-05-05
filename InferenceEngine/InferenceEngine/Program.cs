@@ -20,7 +20,13 @@ namespace InferenceEngine
             //location of the file to read in.
             string fileLocation = "";
             string line = "";
-            string[] infixSplit;
+            //string[] infixSplit;
+            List<string> infixSplit;
+
+            // Split each line further into arugments and commands within each ';' split.
+            // Testing
+            List<string> arguments;
+            List<string> commands;
 
             string testEnumCast = "TT";
             algorithmType selectedAlgorithm;
@@ -93,7 +99,9 @@ namespace InferenceEngine
                     //Do nothing in this case.
                     if (!((line.StartsWith("ASK")) || (line.StartsWith("TELL"))))
                     {
-                        infixSplit = line.Split(';');
+                        infixSplit = line.Split(';').ToList();
+
+                        OrganiseKBData(infixSplit);
                     }
                     //break for now, this is just for testing.
                     //will read next line to determine query
@@ -119,7 +127,51 @@ namespace InferenceEngine
             //wait for the user to close the program.
             Console.WriteLine("Press 'Enter' to continue...");
             Console.ReadLine();
+        }
 
+        static void OrganiseKBData(List<string> split)
+        {
+            // TESTING
+            for (int i = 0; i < split.Count - 1; i++)
+            {
+                // segment applies to each statment before a semicolon.
+                string segment = split[i].Replace(" ", string.Empty);
+
+                // character array stores each character in a segment.
+                char[] character = segment.ToCharArray();
+
+                for (int j = 0; j < character.Length; j++)
+                {
+                    // define the current character and next character in array.
+                    int currentChar = Char.ToLower(character[j]);
+                    int nextChar = 1;
+
+                    // make sure we get an out of bounds exception.
+                    if (j < character.Length - 1)
+                    {
+                        // here we'll store arguments.
+                        nextChar = Char.ToLower(character[j + 1]);
+                    }
+
+                    if (currentChar == '=' && nextChar == '>' || currentChar == '&')
+                    {
+                        // here we'll store operators.
+                        Console.WriteLine();
+                    }
+
+                    // just for testing.
+                    Console.Write(character[j]);
+
+                    if (currentChar == '>' || currentChar == '&')
+                    {
+                        // might need this to store operators too.
+                        Console.WriteLine();
+                    }
+                }
+                Console.WriteLine();
+            }
+
+            throw new NotImplementedException();
         }
     }
 }
