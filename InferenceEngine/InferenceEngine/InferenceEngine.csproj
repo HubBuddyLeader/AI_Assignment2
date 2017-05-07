@@ -53,6 +53,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="PropositionalAlgorithm.cs" />
+    <Compile Include="Sentence.cs" />
+    <Compile Include="Symbol.cs" />
     <Compile Include="TruthTable.cs" />
   </ItemGroup>
   <ItemGroup>

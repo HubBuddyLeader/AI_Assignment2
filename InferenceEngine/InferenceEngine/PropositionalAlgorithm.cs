@@ -10,6 +10,9 @@ namespace InferenceEngine
     {
         public string code;
         public string longName; // Don't know if this is really needed...
+        public List<Sentence> KB;
+        public List<Symbol> knownFacts = new List<Symbol>();
+        public List<Symbol> returnFacts = new List<Symbol>();
 
         // Add general abstract algorithm methods here...
 
@@ -32,5 +35,116 @@ namespace InferenceEngine
         And running iengine with method BC on the example test file above should produce the following output:
         > YES: p2, p3, p1, d 
          */
+
+        public void OrganiseKBData(List<string> split)
+        {
+            // TESTING
+            List<Sentence> SentenceToReturn = new List<Sentence>();
+
+            for (int i = 0; i < split.Count - 1; i++)
+            {
+                // segment applies to each statment before a semicolon.
+                string segment = split[i].Replace(" ", string.Empty);
+
+                // character array stores each character in a segment.
+                char[] character = segment.ToCharArray();
+
+                SentenceToReturn.Add(new Sentence());
+
+                for (int j = 0; j < character.Length; j++)
+                {
+                    // define the current character and next character in array.
+                    int currentChar = Char.ToLower(character[j]);
+                    int nextChar = 1;
+
+                    // make sure we get an out of bounds exception.
+                    if (j < character.Length - 1)
+                    {
+                        // here we'll store arguments.
+                        nextChar = Char.ToLower(character[j + 1]);
+                    }
+
+                    //if (currentChar == '=' && nextChar == '>' || currentChar == '&')
+                    //check for implication
+                    if (currentChar == '=' && nextChar == '>')
+                    {
+                        // here we'll store operators.
+                        SentenceToReturn[i].AddOperator((character[j].ToString() + character[j+1].ToString()).ToString());
+                        j++;
+                        //Console.WriteLine();
+                        continue;
+                    }
+
+                    // just for testing.
+                    //Console.Write(character[j]);
+
+                    if ((currentChar == '>') || (currentChar == '&'))
+                    {
+                        // might need this to store operators too.
+                        SentenceToReturn[i].AddOperator(character[j].ToString());
+                        //Console.WriteLine();
+                        continue;
+                    }
+
+                    //while the next character is not a symbol, build a word.
+                    string symbolName = "";
+                    int symbolCounter = 0;
+
+                    //for some reason, '&' is not a symbol? 
+                    //check if the next character is a symbol
+                    while (!(((Char.IsSymbol(character[j + symbolCounter])))||(character[j + symbolCounter].ToString() == "&"))) 
+                    {
+                        symbolName = symbolName + character[j + symbolCounter].ToString();
+                        symbolCounter++;
+
+                        //we found the end of the array
+                        if ((j + symbolCounter) >= (character.Length))
+                        {
+                            break;
+                        }
+
+                    }
+                    
+
+
+                    j = j + symbolCounter - 1 ;
+
+                    if (SentenceToReturn[i].CheckForImplicationSymbol())
+                    {
+                        SentenceToReturn[i].AddImplications(new Symbol(symbolName));
+                    }
+                    else
+                    {
+                        SentenceToReturn[i].AddSymbol(new Symbol(symbolName));
+                    }
+                }
+                //Console.WriteLine();
+            }
+
+            SentenceToReturn.Reverse();
+            KB =  SentenceToReturn;
+
+            //throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Using the string in KB, operate on the appropriate values. Allows
+        /// definition of operators from strings. Can be expanded as required.
+        /// </summary>
+        /// <param name="op"></param>
+        /// <param name="op1"></param>
+        /// <param name="op2"></param>
+        /// <returns></returns>
+        public static bool Operator(string op, bool op1, bool op2)
+        {
+            switch (op)
+            {
+                case "&": return op1 && op2;
+                case "||": return op1 || op2;
+                case "=>": return (op1 && true); //return the value of op1
+                default: throw new Exception("Invalid Operator");
+            }
+        }
+
     }
 }

@@ -15,6 +15,7 @@ namespace InferenceEngine
         /// </summary>
         public enum algorithmType { TT, FC, BC };
 
+        //public enum operations { }
         static void Main(string[] args)
         {
             //location of the file to read in.
@@ -22,13 +23,13 @@ namespace InferenceEngine
             string line = "";
             //string[] infixSplit;
             List<string> infixSplit;
-
+            ForwardChaining firstRun = new ForwardChaining();
             // Split each line further into arugments and commands within each ';' split.
             // Testing
-            List<string> arguments;
-            List<string> commands;
+
 
             string testEnumCast = "TT";
+            bool resultOfQuery = false;
             algorithmType selectedAlgorithm;
 
             //Prompt for the location of the file
@@ -74,6 +75,7 @@ namespace InferenceEngine
                 //System.IO.StreamReader file = new System.IO.StreamReader(fileLocation);
 
                 //while the file is not finished
+                bool nextLineAsk = false;
                 while ((line = file.ReadLine()) != null)
                 {
                     /*first, check the start character of the line
@@ -97,17 +99,19 @@ namespace InferenceEngine
 
                     //check if the line starts with ASK or TELL.
                     //Do nothing in this case.
+
                     if (!((line.StartsWith("ASK")) || (line.StartsWith("TELL"))))
                     {
-                        infixSplit = line.Split(';').ToList();
-
-                        OrganiseKBData(infixSplit);
-                    }
-                    //break for now, this is just for testing.
-                    //will read next line to determine query
-                    else if (line.StartsWith("ASK"))
-                    {
-                        break;
+                        if (!nextLineAsk)
+                        {
+                            infixSplit = line.Split(';').ToList();
+                            firstRun.OrganiseKBData(infixSplit);
+                            nextLineAsk = true;
+                        }
+                        else
+                        {
+                            resultOfQuery = firstRun.RunAlgorithm(line.ToString());
+                        }
                     }
                 }
                 
@@ -124,54 +128,18 @@ namespace InferenceEngine
                 Environment.Exit(0);
             }
 
-            //wait for the user to close the program.
+            string resultString  = "";
+            //create a string of the search results
+            foreach (Symbol s in firstRun.returnFacts)
+            {
+                resultString += s.Name + ", ";
+            }
+
+            Console.WriteLine(resultOfQuery.ToString() + " : " + resultString);
+
             Console.WriteLine("Press 'Enter' to continue...");
             Console.ReadLine();
         }
-
-        static void OrganiseKBData(List<string> split)
-        {
-            // TESTING
-            for (int i = 0; i < split.Count - 1; i++)
-            {
-                // segment applies to each statment before a semicolon.
-                string segment = split[i].Replace(" ", string.Empty);
-
-                // character array stores each character in a segment.
-                char[] character = segment.ToCharArray();
-
-                for (int j = 0; j < character.Length; j++)
-                {
-                    // define the current character and next character in array.
-                    int currentChar = Char.ToLower(character[j]);
-                    int nextChar = 1;
-
-                    // make sure we get an out of bounds exception.
-                    if (j < character.Length - 1)
-                    {
-                        // here we'll store arguments.
-                        nextChar = Char.ToLower(character[j + 1]);
-                    }
-
-                    if (currentChar == '=' && nextChar == '>' || currentChar == '&')
-                    {
-                        // here we'll store operators.
-                        Console.WriteLine();
-                    }
-
-                    // just for testing.
-                    Console.Write(character[j]);
-
-                    if (currentChar == '>' || currentChar == '&')
-                    {
-                        // might need this to store operators too.
-                        Console.WriteLine();
-                    }
-                }
-                Console.WriteLine();
-            }
-
-            throw new NotImplementedException();
-        }
+      
     }
 }
