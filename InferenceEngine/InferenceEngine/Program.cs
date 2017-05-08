@@ -134,11 +134,11 @@ namespace InferenceEngine
 
             if (resultOfQuery == true)
             {
-                resultOfQueryConverted = "Yes";
+                resultOfQueryConverted = "YES";
             }
             else
             {
-                resultOfQueryConverted = "No";
+                resultOfQueryConverted = "NO";
             }
 
             // output the result
