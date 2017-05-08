@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InferenceEngine
 {
@@ -13,11 +10,11 @@ namespace InferenceEngine
          *     2. if it is fact
          *     3. its "string" name
          */
-         
-        //good practice to keep variables private         
-        private string name;
-        private bool isFact;
+
+        // good practice to keep variables private 
         private int orderAdded;
+        private bool isFact;
+        private string name;
 
         public Symbol(string n)
         {

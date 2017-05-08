@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InferenceEngine
 {
     public abstract class PropositionalAlgorithm
     {
         public string code;
-        public string longName; // Don't know if this is really needed...
+        public string longName;
         public List<Sentence> KB;
         public List<Symbol> knownFacts = new List<Symbol>();
         public List<Symbol> returnFacts = new List<Symbol>();
-
-        // Add general abstract algorithm methods here...
 
         // Each Algorithms description is also in the class file, this is just an overview.
         /*
@@ -38,7 +33,6 @@ namespace InferenceEngine
 
         public void OrganiseKBData(List<string> split)
         {
-            // TESTING
             List<Sentence> SentenceToReturn = new List<Sentence>();
 
             for (int i = 0; i < split.Count - 1; i++)
@@ -60,53 +54,45 @@ namespace InferenceEngine
                     // make sure we get an out of bounds exception.
                     if (j < character.Length - 1)
                     {
-                        // here we'll store arguments.
+                        // here we'll store the next character.
                         nextChar = Char.ToLower(character[j + 1]);
                     }
 
-                    //if (currentChar == '=' && nextChar == '>' || currentChar == '&')
-                    //check for implication
+                    // if (currentChar == '=' && nextChar == '>' || currentChar == '&')
+                    // check for implication
                     if (currentChar == '=' && nextChar == '>')
                     {
                         // here we'll store operators.
                         SentenceToReturn[i].AddOperator((character[j].ToString() + character[j+1].ToString()).ToString());
                         j++;
-                        //Console.WriteLine();
                         continue;
                     }
-
-                    // just for testing.
-                    //Console.Write(character[j]);
 
                     if ((currentChar == '>') || (currentChar == '&'))
                     {
-                        // might need this to store operators too.
+                        // need this to store operators.
                         SentenceToReturn[i].AddOperator(character[j].ToString());
-                        //Console.WriteLine();
                         continue;
                     }
 
-                    //while the next character is not a symbol, build a word.
+                    // while the next character is not a symbol, build a word.
                     string symbolName = "";
                     int symbolCounter = 0;
 
-                    //for some reason, '&' is not a symbol? 
-                    //check if the next character is a symbol
-                    while (!(((Char.IsSymbol(character[j + symbolCounter])))||(character[j + symbolCounter].ToString() == "&"))) 
+                    // for some reason, '&' is not a symbol? 
+                    // check if the next character is a symbol
+                    while (!(((Char.IsSymbol(character[j + symbolCounter]))) || (character[j + symbolCounter].ToString() == "&"))) 
                     {
                         symbolName = symbolName + character[j + symbolCounter].ToString();
                         symbolCounter++;
 
-                        //we found the end of the array
+                        // we found the end of the array
                         if ((j + symbolCounter) >= (character.Length))
                         {
                             break;
                         }
-
                     }
                     
-
-
                     j = j + symbolCounter - 1 ;
 
                     if (SentenceToReturn[i].CheckForImplicationSymbol())
@@ -118,13 +104,10 @@ namespace InferenceEngine
                         SentenceToReturn[i].AddSymbol(new Symbol(symbolName));
                     }
                 }
-                //Console.WriteLine();
             }
 
             SentenceToReturn.Reverse();
             KB =  SentenceToReturn;
-
-            //throw new NotImplementedException();
         }
 
         /// <summary>
@@ -141,8 +124,8 @@ namespace InferenceEngine
             {
                 case "&": return op1 && op2;
                 case "||": return op1 || op2;
-                case "=>": return (op1 && true); //return the value of op1
-                default: throw new Exception("Invalid Operator");
+                case "=>": return (op1 && true); // return the value of op1
+                default: throw new Exception("Invalid Operator!");
             }
         }
 

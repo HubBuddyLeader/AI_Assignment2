@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InferenceEngine
 {
@@ -15,40 +13,37 @@ namespace InferenceEngine
         /// </summary>
         public enum algorithmType { TT, FC, BC };
 
-        //public enum operations { }
+        // public enum operations { }
         static void Main(string[] args)
         {
-            //location of the file to read in.
+            // location of the file to read in.
             string fileLocation = "";
             string line = "";
             //string[] infixSplit;
             List<string> infixSplit;
             ForwardChaining firstRun = new ForwardChaining();
-            // Split each line further into arugments and commands within each ';' split.
-            // Testing
-
 
             string testEnumCast = "TT";
             bool resultOfQuery = false;
             algorithmType selectedAlgorithm;
 
-            //Prompt for the location of the file
+            // prompt for the location of the file
 
             //Console.WriteLine("Please enter the location of the file...");
             //fileLocation = Console.ReadLine();
 
             fileLocation = "test1.txt";
 
-            //for the final version of this code, uncomment this.
-            //this allows the final arguements to be passed into the program.
+            // for the final version of this code, uncomment this.
+            // this allows the final arguements to be passed into the program.
             //fileLocation = args[0];
 
-            //cast algorithm type to enum
-            //try catch to detect incorrect text entry.
+            // cast algorithm type to enum
+            // try catch to detect incorrect text entry.
             try
             {
-                //cast the arguement to the algorithm type
-                //uncomment this in the final verison
+                // cast the arguement to the algorithm type
+                // uncomment this in the final verison.
                 //selectedAlgorithm = (algorithmType)Enum.Parse(typeof(algorithmType), args[1].ToString().ToUpper(), false);
 
                 //for debug
@@ -60,21 +55,21 @@ namespace InferenceEngine
                 Environment.Exit(0);
             }
 
-            //reading the file in is where something may go wrong. 
-            //catch errors for this.
+            // reading the file in is where something may go wrong. 
+            // catch errors for this.
             try
             {
-                //Create the streamreader object to read the file.
-                //for dubug, the file has been added to the resources of this project.
-                //the file has been moved to the debug folder. This gets the location of the file for testing.
+                // Create the streamreader object to read the file.
+                // for dubug, the file has been added to the resources of this project.
+                // the file has been moved to the debug folder. This gets the location of the file for testing.
                 string debugPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"test1.txt");
 
                 System.IO.StreamReader file = new System.IO.StreamReader(debugPath);
 
-                //for final implementation
+                // for final implementation
                 //System.IO.StreamReader file = new System.IO.StreamReader(fileLocation);
 
-                //while the file is not finished
+                // while the file is not finished
                 bool nextLineAsk = false;
                 while ((line = file.ReadLine()) != null)
                 {
@@ -97,9 +92,7 @@ namespace InferenceEngine
                      * 
                      */
 
-                    //check if the line starts with ASK or TELL.
-                    //Do nothing in this case.
-
+                    // check if the line starts with ASK or TELL.
                     if (!((line.StartsWith("ASK")) || (line.StartsWith("TELL"))))
                     {
                         if (!nextLineAsk)
@@ -115,27 +108,41 @@ namespace InferenceEngine
                     }
                 }
                 
-                //close the file
+                // close the file
                 file.Close();
             }
             catch(Exception ex)
             {
                 Console.WriteLine("The selected file could not be opened. Please try executing the program again.");
                 Console.WriteLine(ex.Message);
-                //close the program
+
+                // close the program
                 Console.WriteLine("Press 'Enter' to continue...");
                 Console.ReadLine();
                 Environment.Exit(0);
             }
 
             string resultString  = "";
-            //create a string of the search results
+            // create a string of the search results
             foreach (Symbol s in firstRun.returnFacts)
             {
                 resultString += s.Name + ", ";
             }
 
-            Console.WriteLine(resultOfQuery.ToString() + " : " + resultString);
+            // convert the boolean expression into yes or no
+            string resultOfQueryConverted;
+
+            if (resultOfQuery == true)
+            {
+                resultOfQueryConverted = "Yes";
+            }
+            else
+            {
+                resultOfQueryConverted = "No";
+            }
+
+            // output the result
+            Console.WriteLine(resultOfQueryConverted + ": " + resultString);
 
             Console.WriteLine("Press 'Enter' to continue...");
             Console.ReadLine();

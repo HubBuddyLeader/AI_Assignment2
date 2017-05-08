@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InferenceEngine
 {
     public class Sentence
     {
-        //Sentence structs 
-        //   [Symbol] [Operator] [Symbol] =>  [Implication]
-        List<Symbol> symbols; //left side of clause
-        List<string> operators; //operators within clause (left side only)
-        List<Symbol> implications; //right side of clause
+        // Sentence structs 
+        // [Symbol] [Operator] [Symbol] => [Implication]
+
+        List<Symbol> symbols;       //  left side of clause
+        List<string> operators;     //  operators within clause (left side only)
+        List<Symbol> implications;  //  right side of clause
 
         public Sentence()
         {
@@ -87,7 +85,7 @@ namespace InferenceEngine
 
         public void UpdateFacts(List<Symbol> knownFacts)
         {
-            //update implications
+            // update implications
             foreach (Symbol s in implications)
             {
                 foreach (Symbol a in knownFacts)
@@ -99,7 +97,7 @@ namespace InferenceEngine
                 }
             }
 
-            //update the values in symbols
+            // update the values in symbols
             foreach (Symbol s in symbols)
             {
                 foreach (Symbol a in knownFacts)
@@ -121,18 +119,15 @@ namespace InferenceEngine
              */
             if ((implications.Count == 0) && (operators.Count == 0) && (symbols.Count == 1))
             {
-                //define symbol as fact. Avoid exceptions.
+                // define symbol as fact. Avoid exceptions.
                 foreach (Symbol s in symbols)
                 {
-                    //set fact
+                    // set fact
                     s.IsFact = true;
                     return s;
                 }
             }
-
             return null;
         }
-
-
     }
 }
