@@ -21,7 +21,8 @@ namespace InferenceEngine
             string line = "";
             //string[] infixSplit;
             List<string> infixSplit;
-            ForwardChaining firstRun = new ForwardChaining();
+            //ForwardChaining firstRun = new ForwardChaining();
+            BackwardChaning firstRun = new BackwardChaning();
 
             string testEnumCast = "TT";
             bool resultOfQuery = false;
@@ -123,11 +124,6 @@ namespace InferenceEngine
             }
 
             string resultString  = "";
-            // create a string of the search results
-            foreach (Symbol s in firstRun.returnFacts)
-            {
-                resultString += s.Name + ", ";
-            }
 
             // convert the boolean expression into yes or no
             string resultOfQueryConverted;
@@ -135,6 +131,13 @@ namespace InferenceEngine
             if (resultOfQuery == true)
             {
                 resultOfQueryConverted = "YES";
+
+                // create a string of the search results only if found
+                foreach (Symbol s in firstRun.returnFacts)
+                {
+                    resultString += s.Name + ", ";
+
+                }
             }
             else
             {
