@@ -23,7 +23,9 @@ namespace InferenceEngine
             List<string> infixSplit;
             ForwardChaining firstRun = new ForwardChaining();
 
+            // testing
             string testEnumCast = "TT";
+
             bool resultOfQuery = false;
             algorithmType selectedAlgorithm;
 
@@ -82,16 +84,6 @@ namespace InferenceEngine
                      * 
                     */
 
-                    /* This is just so we don't have keep reading the PDF for a description
-                     * Feel free to delete.
-                     * 
-                     * Slightly more general is the Horn clause, which is a disjunction of literals of which at
-                     * HORN CLAUSE most one is positive. So all deﬁnite clauses are Horn clauses, as are clauses with no positive literals; 
-                     * these are called goal clauses. Horn clauses are closed under resolution: if youre solve GOAL CLAUSES two Horn clauses, 
-                     * you get back a Horn clause.
-                     * 
-                     */
-
                     // check if the line starts with ASK or TELL.
                     if (!((line.StartsWith("ASK")) || (line.StartsWith("TELL"))))
                     {
@@ -123,6 +115,7 @@ namespace InferenceEngine
             }
 
             string resultString  = "";
+
             // create a string of the search results
             foreach (Symbol s in firstRun.returnFacts)
             {
