@@ -42,8 +42,6 @@ namespace InferenceEngine
                 }
             }
 
-
-
             // update the other facts accordingly.
             foreach (Sentence s in KB)
             {
@@ -55,10 +53,10 @@ namespace InferenceEngine
 
             List<Symbol> BCSearchFacts = new List<Symbol>();
 
-            //add the query to the return list
+            // add the query to the return list
             returnFacts.Add(new Symbol(q));
 
-            //need to search through the KB till query is found in implications.
+            // need to search through the KB till query is found in implications.
             for (int i = KB.Count - 1; i >= 0; i--)
             {
                 // while there are still implications in that KB sentence
@@ -71,12 +69,12 @@ namespace InferenceEngine
                         // if (KB[i].Symbols[j].Name == knownFacts[p].Name)
                         if (KB[i].Implications[j].Name == q)
                         {
-                            //add the symbols to the known facts
+                            // add the symbols to the known facts
                             for (int k = KB[i].Symbols.Count - 1; j >= 0; j--)
                             {
                                 bool alreadyAdded = false;
 
-                                //need to check if the symbol has been added already
+                                // need to check if the symbol has been added already
                                 foreach (Symbol s in BCSearchFacts)
                                 {
                                     if (s.Name == KB[i].Symbols[k].Name)
@@ -86,8 +84,8 @@ namespace InferenceEngine
                                     }
                                 }
 
-                                //if the symbol has already been added
-                                //do no add it. Just remove it.
+                                // if the symbol has already been added
+                                // do no add it. Just remove it.
                                 if (alreadyAdded == true)
                                 {
                                     KB[i].Symbols.RemoveAt(k);
@@ -97,22 +95,19 @@ namespace InferenceEngine
                                     BCSearchFacts.Add(KB[i].Symbols[k]);
                                     KB[i].Symbols.RemoveAt(k);
                                 }
-
                             }
-
                             KB.RemoveAt(i);
                         }
                     }
                 }
             }
 
-            //wait until all the facts have been searched
+            // wait until all the facts have been searched
             while (BCSearchFacts.Count > 0)
             {
-
                 for (int p = BCSearchFacts.Count - 1; p >= 0; p--)
                 {
-                    //need to pop the search fact
+                    // need to pop the search fact
                     Symbol symbolP = BCSearchFacts[p];
                     BCSearchFacts.RemoveAt(p);
 
@@ -146,7 +141,7 @@ namespace InferenceEngine
                                 {
                                     bool alreadyAdded = false;
 
-                                    //need to check if the symbol has been added already
+                                    // need to check if the symbol has been added already
                                     foreach (Symbol s in BCSearchFacts)
                                     {
                                         if (s.Name == KB[i].Symbols[j].Name)
@@ -156,8 +151,8 @@ namespace InferenceEngine
                                         }
                                     }
 
-                                    //if the symbol has already been added
-                                    //do no add it. Just remove it.
+                                    // if the symbol has already been added
+                                    // do no add it. Just remove it.
                                     if (alreadyAdded == true)
                                     {
                                         KB[i].Symbols.RemoveAt(j);
@@ -169,8 +164,6 @@ namespace InferenceEngine
 
                                         KB[i].Symbols.RemoveAt(j);
                                     }
-
-
                                 }
                             }
                         }
@@ -190,13 +183,13 @@ namespace InferenceEngine
                     }
                 }
 
-                //do a check for a solution
+                // do a check for a solution
                 foreach (Symbol knownFact in knownFacts)
                 {
                     foreach (Symbol searchFact in BCSearchFacts)
                     {
-                        //check if a known fact is in the search
-                        //if it is, a solution has been found.
+                        // check if a known fact is in the search
+                        // if it is, a solution has been found.
                         if (knownFact.Name == searchFact.Name)
                         {
                             return true;

@@ -116,15 +116,12 @@ namespace InferenceEngine
             }
 
             string resultString  = "";
-<<<<<<< HEAD
 
             // create a string of the search results
             foreach (Symbol s in firstRun.returnFacts)
             {
                 resultString += s.Name + ", ";
             }
-=======
->>>>>>> ecc70b9c95f964aa490ada5faaad3b64a9e3e0d4
 
             // convert the boolean expression into yes or no
             string resultOfQueryConverted;
