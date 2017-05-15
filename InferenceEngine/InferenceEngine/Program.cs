@@ -21,6 +21,8 @@ namespace InferenceEngine
             string line = "";
             //string[] infixSplit;
             List<string> infixSplit;
+
+            // test objects
             //ForwardChaining firstRun = new ForwardChaining();
             BackwardChaning firstRun = new BackwardChaning();
 
