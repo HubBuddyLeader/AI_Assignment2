@@ -54,7 +54,6 @@ namespace InferenceEngine
                 // be used later for "extension" work
                 s.UpdateFacts(knownFacts);
             }
-
             
             // if the known facts are 0, then there is no solution
             while ((knownFacts.Count > 0) )

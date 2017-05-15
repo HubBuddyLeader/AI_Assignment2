@@ -23,5 +23,17 @@ namespace InferenceEngine
          * following output:
          * > YES: 3 
          */
+
+        // Datatable?
+
+        public bool CheckEntails(string q)
+        {
+            return false;
+        }
+
+        public bool CheckAll(string q)
+        { 
+            return false;
+        }
     }
 }

@@ -24,7 +24,8 @@ namespace InferenceEngine
 
             // test objects
             //ForwardChaining firstRun = new ForwardChaining();
-            BackwardChaning firstRun = new BackwardChaning();
+            //BackwardChaning firstRun = new BackwardChaning();
+            TruthTable firstRun = new TruthTable();
 
             // testing
             string testEnumCast = "TT";
@@ -98,7 +99,8 @@ namespace InferenceEngine
                         }
                         else
                         {
-                            resultOfQuery = firstRun.RunAlgorithm(line.ToString());
+                            //resultOfQuery = firstRun.RunAlgorithm(line.ToString());
+                            resultOfQuery = firstRun.CheckAll(line.ToString());
                         }
                     }
                 }
