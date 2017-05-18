@@ -9,6 +9,7 @@ namespace InferenceEngine
         {
             code = "FC";
             longName = "Forward Chaining";
+            algorithm = algorithmType.FC;
         }
 
         /*
