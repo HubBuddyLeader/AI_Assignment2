@@ -49,7 +49,5 @@ namespace InferenceEngine
             get { return orderAdded; }
             set { orderAdded = value; }
         }
-
-
     }
 }

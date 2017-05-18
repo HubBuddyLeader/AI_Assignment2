@@ -54,6 +54,7 @@
     </Compile>
     <Compile Include="PropositionalAlgorithm.cs" />
     <Compile Include="Sentence.cs" />
+    <Compile Include="SingleSymbol.cs" />
     <Compile Include="Symbol.cs" />
     <Compile Include="TruthTable.cs" />
   </ItemGroup>
