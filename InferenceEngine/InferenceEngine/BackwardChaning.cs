@@ -102,6 +102,8 @@ namespace InferenceEngine
                 }
             }
 
+            //test for branch
+
             // wait until all the facts have been searched
             while (BCSearchFacts.Count > 0)
             {
