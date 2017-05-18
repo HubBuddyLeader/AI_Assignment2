@@ -24,8 +24,8 @@ namespace InferenceEngine
 
             // test objects
             //ForwardChaining firstRun = new ForwardChaining();
-            //BackwardChaning firstRun = new BackwardChaning();
-            TruthTable firstRun = new TruthTable();
+            BackwardChaning firstRun = new BackwardChaning();
+            //TruthTable firstRun = new TruthTable();
 
             // testing
             string testEnumCast = "TT";
@@ -99,8 +99,8 @@ namespace InferenceEngine
                         }
                         else
                         {
-                            //resultOfQuery = firstRun.RunAlgorithm(line.ToString());
-                            resultOfQuery = firstRun.CheckAll(line.ToString());
+                            resultOfQuery = firstRun.RunAlgorithm(line.ToString());
+                           // resultOfQuery = firstRun.CheckAll(line.ToString());
                         }
                     }
                 }
@@ -122,10 +122,10 @@ namespace InferenceEngine
             string resultString  = "";
 
             // create a string of the search results
-            foreach (Symbol s in firstRun.returnFacts)
-            {
-                resultString += s.Name + ", ";
-            }
+            //foreach (Symbol s in firstRun.returnFacts)
+            //{
+            //    resultString += s.Name + ", ";
+            //}
 
             // convert the boolean expression into yes or no
             string resultOfQueryConverted;
