@@ -28,6 +28,7 @@ namespace InferenceEngine
 
         public bool CheckEntails(string q)
         {
+            // adding comments
             return false;
         }
 
