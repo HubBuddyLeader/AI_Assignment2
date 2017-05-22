@@ -18,7 +18,7 @@ namespace InferenceEngine
         private List<string> symbolNames = new List<string>();
 
         private Dictionary<int, bool> symbolTruths = new Dictionary<int, bool>();
-        private List<Dictionary<int, bool>> truthsList = new List<Dictionary<int, bool>>();
+        private List<string> symbolColumn = new List<string>();
 
         private void ListSingleSymbols()
         {
@@ -75,7 +75,7 @@ namespace InferenceEngine
 
         public bool CheckEntails(string q)
         {
-            // Get the tables from the sentances in KB.
+            // get the tables from the sentances in KB.
             return false;
         }
 
@@ -86,21 +86,15 @@ namespace InferenceEngine
 
             foreach(SingleSymbol symbol in singleSymbols)
             {
-                Console.Write(symbol.Name + "\t");
+                //Console.Write(symbol.Name.ToUpper() + "\t");
             }
 
             Console.WriteLine();
 
-            foreach(SingleSymbol symbol in singleSymbols)
-            {
-                //symbolTruths.Add(symbol.Name, false);
-                //truthsList.Add(symbolTruths);
-            }
-
             // this is because the starting state is repeated at the end?
             singleSymbols[0].FlipState();
 
-            int counter = 1;
+            int counter = 0;
 
             // flip the truths depending on the significants on the bit. (little endian)
             for (int i = 0; i < Math.Pow(2, singleSymbols.Count()); i++)
@@ -121,20 +115,15 @@ namespace InferenceEngine
                         singleSymbols[j].FlipState();
                     }
                     symbolTruths.Add(counter, singleSymbols[j].Truth);
-                    truthsList.Add(symbolTruths);
 
                     counter++;
-
-                    Console.Write(singleSymbols[j].Truth + "\t");
                 }
-                Console.WriteLine();
             }
 
-            Console.WriteLine();
-
-            // Set the counter to 0;
+            // Set the counter to 0 to cycle through all the dictionary keys.
             counter = 0;
 
+            // diplay each truth value for every combination and add them to a dictionary.
             foreach (KeyValuePair<int, bool> kvp in symbolTruths)
             {
                 //Console.Write(kvp.Value + "\t");
@@ -149,12 +138,118 @@ namespace InferenceEngine
 
             Console.WriteLine();
 
-            return false;
+            // set the values for each column at an index and add them to a list.
+            int count = symbolTruths.Count;
+            string current;
+            int length = singleSymbols.Count;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (i < length)
+                    current = singleSymbols[i].Name;
+                else
+                    current = singleSymbols[i % length].Name;
+
+                symbolColumn.Add(current);
+            }
+
+            //Console.WriteLine(symbolColumn[22].ToUpper());
+            //Console.WriteLine(symbolTruths[22]);
+
+            for (int i = KB.Count - 1; i >= 0; i--)
+            {
+                // add the facts to the list
+                knownFacts.Insert(0, KB[i].FactCheck());
+
+                // due to need for the "factcheck" function to return a bool,
+                // we need to remove the "null"
+                if (knownFacts[0] == null)
+                {
+                    knownFacts.RemoveAt(0);
+                }
+                else
+                {
+                    // remove the facts for the knowledge base
+                    KB.RemoveAt(i);
+                }
+            }
+
+            string outputString = "";
+
+            foreach (Sentence s in KB)
+            {
+                // symbol count will always be >= implication count.
+                for (int i = 0; i <= s.Symbols.Count - 1; i++)
+                {
+                    // add the first symbol
+                    outputString += s.Symbols[i].Name;
+
+                    // check if we go outside the list.
+                    if ((i < s.Operators.Count - 1) && (s.Operators.Count > 0))
+                    {
+                        outputString += "&";
+                    }
+                }
+
+                // check for implications (facts don't have any)
+                if (s.Implications.Count > 0)
+                {
+                    // get the final output string
+                    outputString += "=>" + s.Implications[0].Name; // should only be one implication, might want to use loop for safety.
+                }
+
+                //Console.Write(outputString + "    ");
+
+                // reset the output string.
+                outputString = "";
+            }
+
+            List<List<int>> Facts = new List<List<int>>();
+
+            for (int i = 0; i < knownFacts.Count; i++)
+            {
+                List<int> factReference = new List<int>();
+
+                for (int j = 0; j < symbolColumn.Count; j++)
+                {
+                    if (knownFacts[i].Name == symbolColumn[j])
+                    {
+                        factReference.Add(j);
+                        //models++;
+                        //Console.Write(knownFacts[i].Name + "\t");
+                    }
+                }
+                Facts.Add(factReference);
+            }
+
+            int models = 0;
+
+            ///////////////////// REMOVE THIS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+            //Console.WriteLine(symbolTruths[Facts[0][1]]);
+
+            for (int i = 0; i < Facts.Count; i++)
+            {
+                for (int j = 0; j < Facts[i].Count; j++)
+                {
+                    if (symbolTruths[Facts[0][j]] && symbolTruths[Facts[1][j]] && symbolTruths[Facts[2][j]])
+                    {
+                        models++;
+                    }
+                }
+            }
+
+            Console.WriteLine(models);
+            ///////////////////// REMOVE THIS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+            Console.WriteLine();
+            Console.WriteLine();
+
+            return true;
         }
 
         public bool IsModel(string q)
         {
-            // Check all the symbols and sentances in KB to determine if it's a model.
+            // check all the symbols and sentances in KB to determine if it's a model.
             return false;
         }
     }
