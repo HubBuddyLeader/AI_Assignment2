@@ -12,6 +12,7 @@ namespace InferenceEngine
         {
             code = "BC";
             longName = "Backward Chaining";
+            algorithm = algorithmType.BC;
         }
 
         /*
@@ -19,7 +20,149 @@ namespace InferenceEngine
          * > YES: p2, p3, p1, d 
          */
 
+        /* New BC Algorithm
+         * 1. Check if Query is already known, if so, return true. (Store known facts in list for easy checking)
+         * 2. Else find implications of query (eg. A & B => Query). 
+         * 3. If exists, prove A & B, else return false;
+         * 4. Repeat for A & B until all proven or can't be proven
+         * */
+
         public bool RunAlgorithm(string q)
+        {
+            //list to store facts we still need to prove
+            //proven facts are added to return facts
+            List<Symbol> FactsToProve = new List<Symbol>();
+
+            //Check if the query is already a fact. To do this, make a list of known facts and remove from KB
+            #region Make List of Facts and Add from KB
+            // define "fact" statements
+            // must loop backwards as items will be removed
+            for (int i = KB.Count - 1; i >= 0; i--)
+            {
+                // add the facts to the list
+                //fact check returns itself to state it is a fact or null if it isnt
+                knownFacts.Insert(0, KB[i].FactCheck());
+                
+                // due to need for the "factcheck" function to return a bool,
+                // we need to remove the "null"
+                if (knownFacts[0] == null)
+                {
+                    knownFacts.RemoveAt(0);
+                }
+                else
+                {
+                    // remove the facts for the knowledge base
+                    returnFacts.Add(KB[i].FactCheck());
+                    KB.RemoveAt(i);
+                }
+            }
+            #endregion
+            #region Check if query is a fact in KB
+            foreach (Symbol s in knownFacts)
+            {
+                //if it is a fact, we return true
+                if (s.Name == q)
+                {
+                    return true;
+                }
+            }
+
+            //otherwise we try to prove it, assuming query is true
+            //find an implication of the query and add symbols to searhc list. all need to be proven
+            //for query to be true.
+            foreach (Sentence KBSentence in KB)
+            {
+                foreach (Symbol ImplicationSymbol in KBSentence.Implications)
+                {
+                    if (ImplicationSymbol.Name == q)
+                    {
+                        //add all the symbols to the facts to prove list.
+                        FactsToProve.AddRange(KBSentence.Symbols);
+                        knownFacts.Add(ImplicationSymbol);
+                    }
+                }
+            } //stop here to check values in FactsToProve
+
+
+
+
+
+            #endregion
+            
+            #region Prove Symbols 
+            //need to loop until all facts are found 
+            while (FactsToProve.Count > 0)
+            {
+                //check if that symbol is already a fact, if it is, remove it from the prove list
+                for (int i = FactsToProve.Count - 1; i >= 0; i--)
+                //foreach (Symbol symbolToProve in FactsToProve)
+                {
+                    foreach (Symbol knownFact in knownFacts)
+                    {
+                        //if it is a fact, we return true
+                        if (knownFact.Name == FactsToProve[i].Name)
+                        {
+                            //knownFacts.Add(FactsToProve[i]);
+                            FactsToProve.Remove(FactsToProve[i]);
+                            break;
+                        }
+                    }
+                }
+
+                for (int i = FactsToProve.Count - 1; i >= 0; i--)
+                    //foreach (Symbol symbolToProve in FactsToProve)
+                {
+                    //flag for checking if we have broken the loop
+                    bool factProven = false;
+                    //int to store number if items in facts to prove
+                    int initialSymbolCount = FactsToProve.Count;
+                    //loop through the KB, try to find an implication that matches the search symbol
+                    foreach (Sentence KBSentence in KB)
+                    {
+                        foreach (Symbol ImplicationSymbol in KBSentence.Implications)
+                        {
+                            //when the symbol is found it is "proven" and we move on.
+                            if (ImplicationSymbol.Name == FactsToProve[i].Name)
+                            {
+                                //add this fact to the return facts for display if overall result is true
+                                knownFacts.Add(FactsToProve[i]);
+                                //add any symbol associated with the impication to facts to prove.
+                                FactsToProve.AddRange(KBSentence.Symbols);
+                                //remove the proven symbol from the search list
+                                FactsToProve.Remove(FactsToProve[i]);
+                                //set flag for higher level break
+                                factProven = true;
+                                break;
+                            } 
+                        }
+                        //if we proved that fact, move on.
+                        //avoid out of bounds error
+                        if (factProven) { break; }
+                    }
+
+                    if (!(factProven)) 
+                    //if (initialSymbolCount == FactsToProve.Count)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+            
+            #endregion
+
+        }
+    }
+
+    
+    
+}
+
+
+#region OldCode
+/*
+ * public bool RunAlgorithmOld(string q)
         {
             // define "fact" statements
             // must loop backwards as items will be removed
@@ -101,6 +244,8 @@ namespace InferenceEngine
                     }
                 }
             }
+
+            //test for branch
 
             // wait until all the facts have been searched
             while (BCSearchFacts.Count > 0)
@@ -221,12 +366,7 @@ namespace InferenceEngine
             // test failed
             return false;
         }
-    }
-}
-
-
-#region OldCode
-
+        */
 //using System;
 //using System.Collections.Generic;
 //using System.Linq;

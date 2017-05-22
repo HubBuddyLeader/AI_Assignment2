@@ -3,11 +3,17 @@ using System.Collections.Generic;
 
 namespace InferenceEngine
 {
+    /// <summary>
+    /// Use this enumeration for the search methods.
+    /// </summary>
+    public enum algorithmType { TT, FC, BC };
+
     public abstract class PropositionalAlgorithm
     {
         public string code;
         public string longName;
         public List<Sentence> KB;
+        public algorithmType algorithm;
         public List<Symbol> knownFacts = new List<Symbol>();
         public List<Symbol> returnFacts = new List<Symbol>();
 

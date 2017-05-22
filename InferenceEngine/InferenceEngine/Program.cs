@@ -8,11 +8,6 @@ namespace InferenceEngine
 {
     class Program
     {
-        /// <summary>
-        /// Use this enumeration for the search methods.
-        /// </summary>
-        public enum algorithmType { TT, FC, BC };
-
         // public enum operations { }
         static void Main(string[] args)
         {
@@ -23,9 +18,15 @@ namespace InferenceEngine
             List<string> infixSplit;
 
             // test objects
+<<<<<<< HEAD
             //ForwardChaining firstRun = new ForwardChaining();
             //BackwardChaning firstRun = new BackwardChaning();
             TruthTable firstRun = new TruthTable();
+=======
+            ForwardChaining firstRun = new ForwardChaining();
+            //BackwardChaning firstRun = new BackwardChaning();
+            //TruthTable firstRun = new TruthTable();
+>>>>>>> 5920fb9ae582faafe31752520180ed8e745683fc
 
             // testing
             string testEnumCast = "TT";
@@ -134,11 +135,23 @@ namespace InferenceEngine
             {
                 resultOfQueryConverted = "YES";
 
-                // create a string of the search results only if found
-                foreach (Symbol s in firstRun.returnFacts)
+                if (firstRun.algorithm == algorithmType.FC)
                 {
-                    resultString += s.Name + ", ";
+                    // create a string of the search results only if found
+                    foreach (Symbol s in firstRun.returnFacts)
+                    {
+                        resultString += s.Name + ", ";
 
+                    }
+                }
+                else
+                {
+                    // create a string of the search results only if found
+                    foreach (Symbol s in firstRun.knownFacts)
+                    {
+                        resultString += s.Name + ", ";
+
+                    }
                 }
             }
             else
