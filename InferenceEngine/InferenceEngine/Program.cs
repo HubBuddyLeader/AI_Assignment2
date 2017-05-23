@@ -18,15 +18,13 @@ namespace InferenceEngine
             List<string> infixSplit;
 
             // test objects
-<<<<<<< HEAD
+            //ForwardChaining firstRun = new ForwardChaining();
+            //BackwardChaning firstRun = new BackwardChaning();
+            //TruthTable firstRun = new TruthTable();
+
             //ForwardChaining firstRun = new ForwardChaining();
             //BackwardChaning firstRun = new BackwardChaning();
             TruthTable firstRun = new TruthTable();
-=======
-            ForwardChaining firstRun = new ForwardChaining();
-            //BackwardChaning firstRun = new BackwardChaning();
-            //TruthTable firstRun = new TruthTable();
->>>>>>> 5920fb9ae582faafe31752520180ed8e745683fc
 
             // testing
             string testEnumCast = "TT";
@@ -134,7 +132,7 @@ namespace InferenceEngine
             if (resultOfQuery == true)
             {
                 resultOfQueryConverted = "YES";
-
+                
                 if (firstRun.algorithm == algorithmType.FC)
                 {
                     // create a string of the search results only if found
@@ -144,12 +142,16 @@ namespace InferenceEngine
 
                     }
                 }
+                else if (firstRun.algorithm == algorithmType.TT)
+                {
+                    resultString += "Hello World!";
+                }
                 else
                 {
                     // create a string of the search results only if found
                     foreach (Symbol s in firstRun.knownFacts)
                     {
-                        resultString += s.Name + ", ";
+                        //resultString += s.Name + ", ";
 
                     }
                 }
