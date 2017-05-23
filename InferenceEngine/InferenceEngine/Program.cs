@@ -19,7 +19,15 @@ namespace InferenceEngine
 
             // test objects
             //ForwardChaining firstRun = new ForwardChaining();
+
             BackwardChaning firstRun = new BackwardChaning();
+
+            //BackwardChaning firstRun = new BackwardChaning();
+
+            //TruthTable firstRun = new TruthTable();
+
+            //ForwardChaining firstRun = new ForwardChaining();
+            //BackwardChaning firstRun = new BackwardChaning();
             //TruthTable firstRun = new TruthTable();
 
             // testing
@@ -94,8 +102,8 @@ namespace InferenceEngine
                         }
                         else
                         {
-                            resultOfQuery = firstRun.RunAlgorithm(line.ToString());
-                           // resultOfQuery = firstRun.CheckAll(line.ToString());
+                           resultOfQuery = firstRun.RunAlgorithm(line.ToString());
+                           //resultOfQuery = firstRun.CheckAll();
                         }
                     }
                 }
@@ -128,7 +136,7 @@ namespace InferenceEngine
             if (resultOfQuery == true)
             {
                 resultOfQueryConverted = "YES";
-
+                
                 if (firstRun.algorithm == algorithmType.FC)
                 {
                     // create a string of the search results only if found
@@ -138,12 +146,16 @@ namespace InferenceEngine
 
                     }
                 }
+                else if (firstRun.algorithm == algorithmType.TT)
+                {
+                    resultString += "Hello World!";
+                }
                 else
                 {
                     // create a string of the search results only if found
                     foreach (Symbol s in firstRun.knownFacts)
                     {
-                        resultString += s.Name + ", ";
+                        //resultString += s.Name + ", ";
 
                     }
                 }

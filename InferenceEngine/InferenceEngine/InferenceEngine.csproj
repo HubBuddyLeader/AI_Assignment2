@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="BackwardChaning.cs" />
     <Compile Include="ForwardChaining.cs" />
+    <Compile Include="Model.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -54,6 +55,7 @@
     </Compile>
     <Compile Include="PropositionalAlgorithm.cs" />
     <Compile Include="Sentence.cs" />
+    <Compile Include="SingleSymbol.cs" />
     <Compile Include="Symbol.cs" />
     <Compile Include="TruthTable.cs" />
   </ItemGroup>
