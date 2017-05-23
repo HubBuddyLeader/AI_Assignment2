@@ -33,6 +33,31 @@ namespace InferenceEngine
             //proven facts are added to return facts
             List<Symbol> FactsToProve = new List<Symbol>();
 
+            string outputString = "";
+
+            foreach (Sentence s in KB)
+            {
+                // symbol count will always be >= implication count
+                for (int i = 0; i <= s.Symbols.Count - 1; i++)
+                {
+                    // add the first symbol
+                    outputString += s.Symbols[i].Name.ToString();
+
+                    // check if we go outside the list
+                    if ((i < s.Operators.Count - 1) && (s.Operators.Count > 0))
+                    {
+                        outputString += s.Operators[i].ToString();
+                    }
+                }
+
+                //check for implications (facts don't have any)
+                if (s.Implications.Count > 0)
+                {
+                    //get the final output string
+                    outputString += " => " + s.Implications[0].Name.ToString() + ";"; //should only be one implication, might want to use loop for safety.
+                }
+            }
+
             //Check if the query is already a fact. To do this, make a list of known facts and remove from KB
             #region Make List of Facts and Add from KB
             // define "fact" statements
@@ -88,7 +113,6 @@ namespace InferenceEngine
 
 
             #endregion
-            
             #region Prove Symbols 
             //need to loop until all facts are found 
             while (FactsToProve.Count > 0)
@@ -110,7 +134,6 @@ namespace InferenceEngine
                 }
 
                 for (int i = FactsToProve.Count - 1; i >= 0; i--)
-                    //foreach (Symbol symbolToProve in FactsToProve)
                 {
                     //flag for checking if we have broken the loop
                     bool factProven = false;

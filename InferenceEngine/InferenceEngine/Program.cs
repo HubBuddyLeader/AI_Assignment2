@@ -18,8 +18,8 @@ namespace InferenceEngine
             List<string> infixSplit;
 
             // test objects
-            ForwardChaining firstRun = new ForwardChaining();
-            //BackwardChaning firstRun = new BackwardChaning();
+            //ForwardChaining firstRun = new ForwardChaining();
+            BackwardChaning firstRun = new BackwardChaning();
             //TruthTable firstRun = new TruthTable();
 
             // testing
@@ -63,7 +63,7 @@ namespace InferenceEngine
                 // Create the streamreader object to read the file.
                 // for dubug, the file has been added to the resources of this project.
                 // the file has been moved to the debug folder. This gets the location of the file for testing.
-                string debugPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"test1.txt");
+                string debugPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"test2.txt");
 
                 System.IO.StreamReader file = new System.IO.StreamReader(debugPath);
 

@@ -25,7 +25,7 @@ namespace InferenceEngine
         /// <param name="s"></param>
         public void AddSymbol (Symbol s)
         {
-            symbols.Insert(0,s);
+            symbols.Add(s);
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace InferenceEngine
         /// <param name="op"></param>
         public void AddOperator (string op)
         {
-            operators.Insert(0, op);
+            operators.Add(op);
         }
         
         /// <summary>
@@ -43,7 +43,7 @@ namespace InferenceEngine
         /// <param name="s"></param>
         public void AddImplications(Symbol s)
         {
-            implications.Insert(0, s);
+            implications.Add(s);
         }
 
         public bool CheckForImplicationSymbol()
