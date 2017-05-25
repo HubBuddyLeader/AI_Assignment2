@@ -394,9 +394,6 @@ namespace InferenceEngine
             // contains: list of truths from clause logic. eg: True    True    False   Flase...
             List<bool> clauseTruth = new List<bool>();
 
-            // contains: list of each clause truth logic. eg: (P2 => P3)<True False...>  (C => E)<True True...>  (P1 => P2)<False False...>
-            //List<List<bool>> clauseTruthList = new List<List<bool>>();
-
             bool truth = false;
 
             for (int i = 0; i < firstSymbolTruthsList.Count; i++) // 4
