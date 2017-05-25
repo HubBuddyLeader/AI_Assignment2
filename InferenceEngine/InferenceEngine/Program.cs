@@ -20,14 +20,14 @@ namespace InferenceEngine
             // test objects
             //ForwardChaining firstRun = new ForwardChaining();
 
-            BackwardChaning firstRun = new BackwardChaning();
+            //BackwardChaning firstRun = new BackwardChaning();
 
             //BackwardChaning firstRun = new BackwardChaning();
 
             //TruthTable firstRun = new TruthTable();
 
             //ForwardChaining firstRun = new ForwardChaining();
-            //BackwardChaning firstRun = new BackwardChaning();
+            BackwardChaning firstRun = new BackwardChaning();
             //TruthTable firstRun = new TruthTable();
 
             // testing
@@ -155,8 +155,7 @@ namespace InferenceEngine
                     // create a string of the search results only if found
                     foreach (Symbol s in firstRun.knownFacts)
                     {
-                        //resultString += s.Name + ", ";
-
+                        resultString += s.Name + ", ";
                     }
                 }
             }
