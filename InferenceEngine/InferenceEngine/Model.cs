@@ -43,7 +43,7 @@ namespace InferenceEngine
             {
                 truths = 0;
 
-                for (int j = 0; j < modelList.Count; j++) // 7
+                for (int j = 0; j < modelList.Count; j++) // 10
                 {
                     if (modelList[j][i] == true)
                     {
@@ -61,7 +61,6 @@ namespace InferenceEngine
                     }
                 }
             }
-            
             return models;
         }
     }
