@@ -39,11 +39,11 @@ namespace InferenceEngine
             int truths = 0;
             int models = 0;
 
-            for (int i = 0; i < modelList[0].Count; i++)
+            for (int i = 0; i < modelList[0].Count; i++) // ~2048
             {
                 truths = 0;
 
-                for (int j = 0; j < modelList.Count; j++)
+                for (int j = 0; j < modelList.Count; j++) // ~10
                 {
                     if (modelList[j][i] == true)
                     {
@@ -55,13 +55,12 @@ namespace InferenceEngine
                         models++;
                     }
 
-                    if (truths >= 3)
+                    if (truths >= modelList.Count)
                     {
                         truths = 0;
                     }
                 }
             }
-            
             return models;
         }
     }

@@ -20,6 +20,7 @@ namespace InferenceEngine
             // test objects
             //ForwardChaining firstRun = new ForwardChaining();
 
+<<<<<<< HEAD
             //BackwardChaning firstRun = new BackwardChaning();
 
             //BackwardChaning firstRun = new BackwardChaning();
@@ -29,6 +30,11 @@ namespace InferenceEngine
             //ForwardChaining firstRun = new ForwardChaining();
             BackwardChaning firstRun = new BackwardChaning();
             //TruthTable firstRun = new TruthTable();
+=======
+            //BackwardChaning firstRun = new BackwardChaning();
+
+            TruthTable firstRun = new TruthTable();
+>>>>>>> b1644a9710e2e8dd8f7122ed126e8593b552175c
 
             // testing
             string testEnumCast = "TT";
@@ -41,7 +47,7 @@ namespace InferenceEngine
             //Console.WriteLine("Please enter the location of the file...");
             //fileLocation = Console.ReadLine();
 
-            fileLocation = "test1.txt";
+            //fileLocation = "test1.txt";
 
             // for the final version of this code, uncomment this.
             // this allows the final arguements to be passed into the program.
@@ -71,7 +77,7 @@ namespace InferenceEngine
                 // Create the streamreader object to read the file.
                 // for dubug, the file has been added to the resources of this project.
                 // the file has been moved to the debug folder. This gets the location of the file for testing.
-                string debugPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"test2.txt");
+                string debugPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"test1.txt");
 
                 System.IO.StreamReader file = new System.IO.StreamReader(debugPath);
 
@@ -102,8 +108,8 @@ namespace InferenceEngine
                         }
                         else
                         {
-                           resultOfQuery = firstRun.RunAlgorithm(line.ToString());
-                           //resultOfQuery = firstRun.CheckAll();
+                            //resultOfQuery = firstRun.RunAlgorithm(line.ToString());
+                            resultOfQuery = firstRun.CheckAll(line.ToString());
                         }
                     }
                 }
@@ -148,7 +154,7 @@ namespace InferenceEngine
                 }
                 else if (firstRun.algorithm == algorithmType.TT)
                 {
-                    resultString += "Hello World!";
+                    resultString = firstRun.IsModel().ToString();
                 }
                 else
                 {

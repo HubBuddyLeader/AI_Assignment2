@@ -15,11 +15,23 @@ namespace InferenceEngine
             algorithm = algorithmType.TT;
         }
 
+        // contains: list of SingleSymbol objects to be converted to strings for later use.
         private List<SingleSymbol> singleSymbols = new List<SingleSymbol>();
+
+        // contains: list of all the symbols in the KB.
         private List<string> symbolNames = new List<string>();
 
+        // contains: list of truths for each symbol in the KB.
         private Dictionary<int, bool> symbolTruths = new Dictionary<int, bool>();
+
+        // contains: organised list with each index representing a single symbol name from the KB.
         private List<string> symbolColumn = new List<string>();
+
+        // contains: list of each clause truth logic. eg: (P2 => P3)<True False...>  (C => E)<True True...>  (P1 => P2)<False False...>
+        List<List<bool>> clauseTruthList = new List<List<bool>>();
+
+        // contains: list of know facts for each sentance in the KB.
+        List<List<bool>> Facts = new List<List<bool>>();
 
         private void ListSingleSymbols()
         {
@@ -30,10 +42,10 @@ namespace InferenceEngine
                 foreach (Symbol symbol in sentance.Symbols)
                 {
                     // make sure the symbol doesn't already exist.
-                    if (symbolNames.Contains(symbol.Name) == false)
+                    if (symbolNames.Contains(symbol.Name.ToLower()) == false)
                     {
                         // if it doesn't exist, add it to the list.
-                        symbolNames.Add(symbol.Name);
+                        symbolNames.Add(symbol.Name.ToLower());
                     }
                 }
 
@@ -41,10 +53,10 @@ namespace InferenceEngine
                 foreach (Symbol symbol in sentance.Implications)
                 {
                     // make sure the symbol doesn't already exist.
-                    if (symbolNames.Contains(symbol.Name) == false)
+                    if (symbolNames.Contains(symbol.Name.ToLower()) == false)
                     {
                         // if it doesn't exist, add it to the list.
-                        symbolNames.Add(symbol.Name);
+                        symbolNames.Add(symbol.Name.ToLower());
                     }
                 }
             }
@@ -74,25 +86,24 @@ namespace InferenceEngine
          * > YES: 3 
          */
 
-        public bool CheckEntails(string q)
-        {
-            // get the tables from the sentances in KB.
-            return false;
-        }
-
-        public bool CheckAll()
+        public bool CheckAll(string q)
         {
             // perform the single symbols method.
             ListSingleSymbols();
 
-            foreach(SingleSymbol symbol in singleSymbols)
+            bool toReturn = false;
+
+            // find if the query exists in the KB.
+            foreach (string symbol in symbolNames)
             {
-                Console.Write(symbol.Name.ToUpper() + "\t");
+                if (symbol == q.ToLower())
+                {
+                    // found a solution!
+                    toReturn = true;
+                }
             }
 
-            Console.WriteLine();
-
-            // this is because the starting state is repeated at the end?
+            // this is because the starting state is repeated at the end otherwise?
             singleSymbols[0].FlipState();
 
             int counter = 0;
@@ -123,21 +134,6 @@ namespace InferenceEngine
 
             // Set the counter to 0 to cycle through all the dictionary keys.
             counter = 0;
-
-            // diplay each truth value for every combination and add them to a dictionary.
-            foreach (KeyValuePair<int, bool> kvp in symbolTruths)
-            {
-                Console.Write(kvp.Value + "\t");
-
-                counter++;
-
-                if (counter % 11 == 0)
-                {
-                    Console.WriteLine();
-                }
-            }
-
-            Console.WriteLine();
 
             // set the values for each column at an index and add them to a list.
             int count = symbolTruths.Count;
@@ -172,6 +168,61 @@ namespace InferenceEngine
                 }
             }
 
+            // check for all the implications and create separate truth table for that.
+            CheckEntails(q);
+
+            /// <summary>
+            /// This part was just for the known facts
+            /// the list of truth values assigned
+            /// once the program works out which
+            /// column the truth is in.
+            /// </summary>
+
+            // add the sentace truths first.
+            foreach(List<bool> truthList in clauseTruthList)
+            {
+                Facts.Add(truthList);
+            }
+
+            // contains: the query truths as a known fact.
+            List<bool> qTruths = new List<bool>();
+
+            // add the query q second.
+            for(int i = 0; i < symbolColumn.Count; i++)
+            {
+                if (q == symbolColumn[i])
+                {
+                    // add the truths to a list so the query becomes a known fact.
+                    qTruths.Add(symbolTruths[i]);
+                }
+            }
+
+            // add the query q to the Facts list.
+            Facts.Add(qTruths);
+
+            // add the known facts third.
+            for (int i = 0; i < knownFacts.Count; i++)
+            {
+                List<bool> factReference = new List<bool>();
+
+                for (int j = 0; j < symbolColumn.Count; j++)
+                {
+                    if (knownFacts[i].Name == symbolColumn[j])
+                    {
+                        factReference.Add(symbolTruths[j]);
+                    }
+                }
+                Facts.Add(factReference);
+            }
+
+            Console.WriteLine("Facts.Count: " + Facts.Count);
+
+            return toReturn;
+        }
+
+        private void CheckEntails(string q)
+        {
+            // contains: list of sentances in string form to be broken down later.
             List<string> sentanceList = new List<string>();
 
             string outputString = "";
@@ -204,27 +255,30 @@ namespace InferenceEngine
                 outputString = "";
             }
 
-            ///////////// FROM HERE //////////////////////////////////////////////////////////
-
-            /// <summary>
-            /// This is the part i've been slaving over...
-            /// it's the list of truths after the implications have been
-            /// worked out.
-            /// The '&' symbol part hasn't been implemented as of yet
-            /// but as soon as the regular => is implmented it should
-            /// be similar.
-            /// </summary>
-
+            // an array of strings from the sentanceList that will be broken down and
+            // put into other lists so it's easy to manage the data.
             string[] newString = { "" };
+
+            ////////////// Implications without & \\\\\\\\\\\\\\\\\\
 
             // contains: first symbols
             List<string> firstSymbolList = new List<string>();
 
+            // contains: implications
+            List<string> implicationList = new List<string>();
+
+            //////////////// Implications with & \\\\\\\\\\\\\\\\\\\
+
+            // contains: first symbols before '&'
+            List<string> beforeAndList = new List<string>();
+
             // contains: first symbols after '&'
             List<string> afterAndList = new List<string>();
 
-            // contains: implications
-            List<string> implicationList = new List<string>();
+            // contains: implications after '&'
+            List<string> implicationAndList = new List<string>();
+
+            ///////////////////// List of Lists \\\\\\\\\\\\\\\\\\\\\
 
             // contains: [0]first symbol list    [1]implies list
             List<List<string>> sentanceImplies = new List<List<string>>();
@@ -232,39 +286,36 @@ namespace InferenceEngine
             // contains: [0]first symbol list    [1]first symbol after '&' list   [2] implies list
             List<List<string>> sentanceAndImplies = new List<List<string>>();
 
-            Console.WriteLine("Sentance List: " + sentanceList.Count + "\n");
-
             for (int i = 0; i < sentanceList.Count; i++) // i < 7;
             {
-                if (!sentanceList[i].Contains('&'))
+                if (!sentanceList[i].Contains('&')) // doesn't contain &: p2 => p3;
                 {
                     newString = sentanceList[i].Split(new char[] { '=', '>' }, StringSplitOptions.RemoveEmptyEntries);
 
-                    firstSymbolList.Add(newString[0]);
-                    implicationList.Add(newString[1]);
+                    firstSymbolList.Add(newString[0].ToLower());
+                    implicationList.Add(newString[1].ToLower());
+                }
+
+                if (sentanceList[i].Contains('&')) // contains &: a & b => c;
+                {
+                    newString = sentanceList[i].Split(new char[] { '=', '>', '&' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    beforeAndList.Add(newString[0].ToLower());
+                    afterAndList.Add(newString[1].ToLower());
+                    implicationAndList.Add(newString[2].ToLower());
                 }
             }
 
+            // implies without '&'
             sentanceImplies.Add(firstSymbolList);
             sentanceImplies.Add(implicationList);
 
-            Console.WriteLine("Sentance Implies Lists: " + sentanceImplies.Count);      // expected: 2
-            Console.WriteLine("Single Symbol List: " + sentanceImplies[0].Count);       // expected: 4
-            Console.WriteLine("Implication List: " + sentanceImplies[1].Count + "\n");  // expected: 4
+            // implies with '&'
+            sentanceAndImplies.Add(beforeAndList);
+            sentanceAndImplies.Add(afterAndList);
+            sentanceAndImplies.Add(implicationAndList);
 
-            //                   firstSymbolList[3]              implicationsList[3]
-            //                                   p2     =>                        p3
-            Console.WriteLine(sentanceImplies[0][3] + " => " + sentanceImplies[1][3] + "\n");
-
-            Console.WriteLine("sentanceImplies[0].Count: " + sentanceImplies[0].Count);
-            Console.WriteLine("symbolNames.Count: " + symbolColumn.Count);
-            Console.WriteLine();
-
-            // contains: list of truths from clause logic. eg: True    True    False   Flase...
-            List <bool> clauseTruth = new List<bool>();
-
-            // contains: list of each clause truth logic. eg: (P2 => P3)<True False...>  (C => E)<True True...>  (P1 => P2)<False False...>
-            List<List<bool>> clauseTruthList = new List<List<bool>>();
+            /////////////// Implications without '&' \\\\\\\\\\\\\\\\\\\\
 
             // contains: first symbol truths.
             List<bool> firstSymbolTruths = new List<bool>();
@@ -272,11 +323,33 @@ namespace InferenceEngine
             // contains: implications truths.
             List<bool> implicationTruths = new List<bool>();
 
+            /////////////// Implications with '&' \\\\\\\\\\\\\\\\\\\\\\\
+
+            // contains: before and symbol truths.
+            List<bool> beforeAndTruths = new List<bool>();
+
+            // contains: after and symbol truths.
+            List<bool> afterAndTruths = new List<bool>();
+
+            // contains: and implication truths.
+            List<bool> implicationsAndTruths = new List<bool>();
+
+            /////////////////////// List of Lists \\\\\\\\\\\\\\\\\\\\\\\
+
             // contains: sentance with no '&' symbol truths.
-            List<List<bool>> sentanceTruths = new List<List<bool>>();
+            List<List<bool>> firstSymbolTruthsList = new List<List<bool>>();
+            List<List<bool>> implicationTruthsList = new List<List<bool>>();
+
+            // contains: sentance with '&' symbol truths.
+            List<List<bool>> beforeAndTruthsList = new List<List<bool>>();
+            List<List<bool>> afterAndTruthsList = new List<List<bool>>();
+            List<List<bool>> implicationsAndTruthsList = new List<List<bool>>();
 
             for (int i = 0; i < sentanceImplies[0].Count; i++) // 4
             {
+                firstSymbolTruths = new List<bool>();
+                implicationTruths = new List<bool>();
+
                 for (int j = 0; j < symbolTruths.Count; j++) // ~22,500
                 {
                     if (sentanceImplies[0][i] == symbolColumn[j])
@@ -288,111 +361,97 @@ namespace InferenceEngine
                         implicationTruths.Add(symbolTruths[j]);
                     }
                 }
-                sentanceTruths.Add(firstSymbolTruths);
-                sentanceTruths.Add(implicationTruths);
+                firstSymbolTruthsList.Add(firstSymbolTruths);
+                implicationTruthsList.Add(implicationTruths);
             }
 
-            Console.WriteLine(sentanceTruths.Count);
+            for (int i = 0; i < sentanceAndImplies[0].Count; i++) // 3
+            {
+                beforeAndTruths = new List<bool>();
+                afterAndTruths = new List<bool>();
+                implicationsAndTruths = new List<bool>();
+
+                for (int j = 0; j < symbolTruths.Count; j++) // ~22,500
+                {
+                    if (sentanceAndImplies[0][i] == symbolColumn[j])
+                    {
+                        beforeAndTruths.Add(symbolTruths[j]);
+                    }
+                    if (sentanceAndImplies[1][i] == symbolColumn[j])
+                    {
+                        afterAndTruths.Add(symbolTruths[j]);
+                    }
+                    if (sentanceAndImplies[2][i] == symbolColumn[j])
+                    {
+                        implicationsAndTruths.Add(symbolTruths[j]);
+                    }
+                }
+                beforeAndTruthsList.Add(beforeAndTruths);
+                afterAndTruthsList.Add(afterAndTruths);
+                implicationsAndTruthsList.Add(implicationsAndTruths);
+            }
+
+            // contains: list of truths from clause logic. eg: True    True    False   Flase...
+            List<bool> clauseTruth = new List<bool>();
 
             bool truth = false;
 
-            //for (int i = 0; i < sentanceTruths.Count; i++)
+            for (int i = 0; i < firstSymbolTruthsList.Count; i++) // 4
             {
-                for (int j = 0; j < sentanceTruths[0].Count; j++)
+                clauseTruth = new List<bool>();
+
+                for (int j = 0; j < firstSymbolTruthsList[i].Count; j++) // 2048
                 {
-                    if (sentanceTruths[4][j] && sentanceTruths[5][j] == false)
+                    if (firstSymbolTruthsList[i][j] && implicationTruthsList[i][j] == false)
                     {
                         truth = false;
-                    } else {
+                    }
+                    else
+                    {
                         truth = true;
                     }
-                    //Console.WriteLine(truth);
+                    clauseTruth.Add(truth);
                 }
+                clauseTruthList.Add(clauseTruth);
             }
 
-
-            //////// TO HERE IS FUCKED ////////////////////////////////////////////////
-
-
-            
-            
-            /// <summary>
-            /// This part was just for the known facts
-            /// the list of truth values assigned
-            /// once the program works out which
-            /// column the truth is in.
-            /// </summary>
-
-            List<List<bool>> Facts = new List<List<bool>>();
-
-            for (int i = 0; i < knownFacts.Count; i++)
+            for (int i = 0; i < beforeAndTruthsList.Count; i++) // 3
             {
-                List<bool> factReference = new List<bool>();
+                clauseTruth = new List<bool>();
 
-                for (int j = 0; j < symbolColumn.Count; j++)
+                for (int j = 0; j < beforeAndTruthsList[i].Count; j++) // 2048
                 {
-                    if (knownFacts[i].Name == symbolColumn[j])
+                    if ((beforeAndTruthsList[i][j] && afterAndTruthsList[i][j]) && implicationsAndTruthsList[i][j] == false)
                     {
-                        factReference.Add(symbolTruths[j]);
-                        //Console.WriteLine(symbolColumn[j]);
-                        //models++;
-                        //Console.Write(knownFacts[i].Name + "\t");
+                        truth = false;
                     }
+                    else
+                    {
+                        truth = true;
+                    }
+                    clauseTruth.Add(truth);
                 }
-                Facts.Add(factReference);
+                clauseTruthList.Add(clauseTruth);
             }
+        }
 
-            //Console.WriteLine();
-            //Console.WriteLine(Facts[0][3]);
-
-            int models = 0;
-
-            ///////////////////// REMOVE THIS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-            /// <summary>
-            /// This part was just here to test the models and was
-            /// how I was going to fall back on if shit hit the fan
-            /// before the due date.
-            /// </summary>
-            //Console.WriteLine(symbolTruths[Facts[0][1]]);
-
-            for (int i = 0; i < Facts[0].Count; i++)
-            {
-                if (Facts[0][i] && Facts[1][i] && Facts[2][i])
-                {
-                    models++;
-                }
-            }
-
-            Console.WriteLine(models);
-            ///////////////////// REMOVE THIS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-
+        public int IsModel()
+        {
             /// <summary>
             /// This is the part for the models...
             /// plug in the clause values in here when they work.
             /// </summary>
+
             Model model = new Model(Facts.Count);
 
             foreach (List<bool> factList in Facts)
             {
                 model.PopulateList(factList);
             }
-            //model.PopulateList(Facts[0]);
+
             int newModels = model.IsModel();
 
-            Console.WriteLine(newModels);
-            //Console.WriteLine(Facts[0].Count);
-
-            Console.WriteLine();
-            Console.WriteLine();
-
-            return true;
-        }
-
-        public bool IsModel(string q)
-        {
-            // check all the symbols and sentances in KB to determine if it's a model.
-            return false;
+            return newModels;
         }
     }
 }
