@@ -18,40 +18,23 @@ namespace InferenceEngine
             List<string> infixSplit;
 
             // test objects
-            //ForwardChaining firstRun = new ForwardChaining();
-
-<<<<<<< HEAD
-            //BackwardChaning firstRun = new BackwardChaning();
-
-            //BackwardChaning firstRun = new BackwardChaning();
-
-            //TruthTable firstRun = new TruthTable();
-
-            //ForwardChaining firstRun = new ForwardChaining();
-            BackwardChaning firstRun = new BackwardChaning();
-            //TruthTable firstRun = new TruthTable();
-=======
-            //BackwardChaning firstRun = new BackwardChaning();
-
-            TruthTable firstRun = new TruthTable();
->>>>>>> b1644a9710e2e8dd8f7122ed126e8593b552175c
 
             // testing
-            string testEnumCast = "TT";
+            string testEnumCast = "BC";
 
             bool resultOfQuery = false;
-            algorithmType selectedAlgorithm;
+            algorithmType selectedAlgorithm = algorithmType.BC;
 
             // prompt for the location of the file
 
             //Console.WriteLine("Please enter the location of the file...");
-            //fileLocation = Console.ReadLine();
+            fileLocation = Console.ReadLine();
 
-            //fileLocation = "test1.txt";
+            fileLocation = "test1.txt";
 
             // for the final version of this code, uncomment this.
             // this allows the final arguements to be passed into the program.
-            //fileLocation = args[0];
+            fileLocation = args[0];
 
             // cast algorithm type to enum
             // try catch to detect incorrect text entry.
@@ -59,16 +42,20 @@ namespace InferenceEngine
             {
                 // cast the arguement to the algorithm type
                 // uncomment this in the final verison.
-                //selectedAlgorithm = (algorithmType)Enum.Parse(typeof(algorithmType), args[1].ToString().ToUpper(), false);
+                selectedAlgorithm = (algorithmType)Enum.Parse(typeof(algorithmType), args[1].ToString().ToUpper(), false);
 
                 //for debug
-                selectedAlgorithm = (algorithmType)Enum.Parse(typeof(algorithmType), testEnumCast, true);
+                //selectedAlgorithm = (algorithmType)Enum.Parse(typeof(algorithmType), testEnumCast, true);
             }
             catch
             {
                 Console.WriteLine("Invalid algorithm. Please try again.");
                 Environment.Exit(0);
             }
+
+            BackwardChaning BCObject = new BackwardChaning();
+            ForwardChaining FCObject = new ForwardChaining();    
+            TruthTable TTSearch = new TruthTable();
 
             // reading the file in is where something may go wrong. 
             // catch errors for this.
@@ -77,12 +64,12 @@ namespace InferenceEngine
                 // Create the streamreader object to read the file.
                 // for dubug, the file has been added to the resources of this project.
                 // the file has been moved to the debug folder. This gets the location of the file for testing.
-                string debugPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"test1.txt");
+                //string debugPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"test1.txt");
 
-                System.IO.StreamReader file = new System.IO.StreamReader(debugPath);
+                //System.IO.StreamReader file = new System.IO.StreamReader(debugPath);
 
                 // for final implementation
-                //System.IO.StreamReader file = new System.IO.StreamReader(fileLocation);
+                System.IO.StreamReader file = new System.IO.StreamReader(fileLocation);
 
                 // while the file is not finished
                 bool nextLineAsk = false;
@@ -103,13 +90,36 @@ namespace InferenceEngine
                         if (!nextLineAsk)
                         {
                             infixSplit = line.Split(';').ToList();
-                            firstRun.OrganiseKBData(infixSplit);
+                            if (selectedAlgorithm == algorithmType.BC)
+                            {
+                                BCObject.OrganiseKBData(infixSplit);
+                            }
+                            else if (selectedAlgorithm == algorithmType.FC)
+                            {
+                                FCObject.OrganiseKBData(infixSplit);
+                            }
+                            else
+                            {
+                                TTSearch.OrganiseKBData(infixSplit);
+                            }
+
+                            //firstRun.OrganiseKBData(infixSplit);
                             nextLineAsk = true;
                         }
                         else
                         {
-                            //resultOfQuery = firstRun.RunAlgorithm(line.ToString());
-                            resultOfQuery = firstRun.CheckAll(line.ToString());
+                            if (selectedAlgorithm == algorithmType.BC)
+                            {
+                                resultOfQuery = BCObject.RunAlgorithm(line.ToString());
+                            }
+                            else if (selectedAlgorithm == algorithmType.FC)
+                            {
+                                resultOfQuery = FCObject.RunAlgorithm(line.ToString());
+                            }
+                            else
+                            {
+                                resultOfQuery = TTSearch.CheckAll(line.ToString());
+                            }
                         }
                     }
                 }
@@ -143,27 +153,40 @@ namespace InferenceEngine
             {
                 resultOfQueryConverted = "YES";
                 
-                if (firstRun.algorithm == algorithmType.FC)
-                {
-                    // create a string of the search results only if found
-                    foreach (Symbol s in firstRun.returnFacts)
+                //if (selectedAlgorithm == algorithmType.FC)
+                //{
+                    if (selectedAlgorithm == algorithmType.BC)
                     {
-                        resultString += s.Name + ", ";
+                        // create a string of the search results only if found
+                        foreach (Symbol s in BCObject.knownFacts)
+                        {
+                            resultString += s.Name + ", ";
 
+                        }
                     }
-                }
-                else if (firstRun.algorithm == algorithmType.TT)
-                {
-                    resultString = firstRun.IsModel().ToString();
-                }
-                else
-                {
-                    // create a string of the search results only if found
-                    foreach (Symbol s in firstRun.knownFacts)
+                    else if (selectedAlgorithm == algorithmType.FC)
                     {
-                        resultString += s.Name + ", ";
+                        // create a string of the search results only if found
+                        foreach (Symbol s in FCObject.returnFacts)
+                        {
+                            resultString += s.Name + ", ";
+
+                        }
                     }
-                }
+                    else
+                    {
+                        resultString = TTSearch.IsModel().ToString();
+
+                        /*
+                        // create a string of the search results only if found
+                        foreach (Symbol s in TTSearch.returnFacts)
+                        {
+                            resultString += s.Name + ", ";
+
+                        }
+                        */
+                    }
+                //}
             }
             else
             {
