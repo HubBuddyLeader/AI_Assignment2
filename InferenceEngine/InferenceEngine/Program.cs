@@ -22,12 +22,6 @@ namespace InferenceEngine
 
             //BackwardChaning firstRun = new BackwardChaning();
 
-            //BackwardChaning firstRun = new BackwardChaning();
-
-            //TruthTable firstRun = new TruthTable();
-
-            //ForwardChaining firstRun = new ForwardChaining();
-            //BackwardChaning firstRun = new BackwardChaning();
             TruthTable firstRun = new TruthTable();
 
             // testing
@@ -41,7 +35,7 @@ namespace InferenceEngine
             //Console.WriteLine("Please enter the location of the file...");
             //fileLocation = Console.ReadLine();
 
-            fileLocation = "test1.txt";
+            //fileLocation = "test1.txt";
 
             // for the final version of this code, uncomment this.
             // this allows the final arguements to be passed into the program.
@@ -103,7 +97,7 @@ namespace InferenceEngine
                         else
                         {
                             //resultOfQuery = firstRun.RunAlgorithm(line.ToString());
-                            resultOfQuery = firstRun.CheckAll();
+                            resultOfQuery = firstRun.CheckAll(line.ToString());
                         }
                     }
                 }
@@ -148,7 +142,7 @@ namespace InferenceEngine
                 }
                 else if (firstRun.algorithm == algorithmType.TT)
                 {
-                    resultString += "Hello World!";
+                    resultString = firstRun.IsModel().ToString();
                 }
                 else
                 {
